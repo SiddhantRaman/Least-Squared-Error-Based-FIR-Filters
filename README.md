@@ -8,7 +8,7 @@
 ```
 http://askubuntu.com/questions/101591/how-do-i-install-python-2-7-2-on-ubuntu
 ```
-###NOTE: Follow similar instructions on https://www.python.org/ to get python on windows or macOS
+#### NOTE: Follow similar instructions on https://www.python.org/ to get python on windows or macOS
 ### Get the repositiory
 ```
 username@ubuntu:~$ git clone https://github.com/fourier-being/Least-Squared-Error-Based-FIR-Filters.git
@@ -28,10 +28,8 @@ username@ubuntu:~/Least-Squared-Error-Based-FIR-Filters$ python LSDesignAdvanced
 #### NOTE: There are sliding bars at the bottom of the plot window corresponding to different parameters. You can adjust the sliding bars according to your requirement and then click on "Generate" button to generate the coefficients.
 
 ## Description
-
-## Usage
-
-## Example
+This tool currently implements only Low-Pass FIR Filter. I am working to add other filters - Bandpass, High Pass and Multiple Band Pass.
+Future scope includes a python package which would have all these FIR filters APIs and Coefficients generated using this GUI based tool. Least-Squared Error based FIR Filters basically minimizes the squared error between desired filter response and amplitude response of the FIR filter. I am taking Type-I filter here since it is Low-Pass.
 
 ## License
 
