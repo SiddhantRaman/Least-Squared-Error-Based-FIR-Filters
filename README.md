@@ -33,3 +33,6 @@ username@ubuntu:~/Least-Squared-Error-Based-FIR-Filters$ python LSDesignAdvanced
 
 ## Example
 
+## License
+
+MIT © [fourier-being]
