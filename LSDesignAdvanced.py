@@ -1,5 +1,5 @@
 import numpy as np
-import scipy.linalg as ln
+import LSFIR
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
 
@@ -11,112 +11,14 @@ Taps = 71      # FIR Filter Taps
 Fnotch1 = 60   #Notch out freq Fnotch1
 Fnotch2 = 60
 
-n_global = np.arange(0,Taps)
 h_global = np.zeros(Taps)
-
-def lpfls(N,wp,ws,W):
-    M = (N-1)/2
-    nq = np.arange(0,2*M+1)
-    nb = np.arange(0,M+1)
-    q = (wp/np.pi)*np.sinc((wp/np.pi)*nq) - W*(ws/np.pi)*np.sinc((ws/np.pi)*nq)
-    b = (wp/np.pi)*np.sinc((wp/np.pi)*nb)
-    q[0] = wp/np.pi + W*(1-ws/np.pi) # since sin(pi*n)/pi*n = 1, not 0
-    b = b.transpose()
-    
-    Q1 = ln.toeplitz(q[0:M+1])
-    Q2 = ln.hankel(q[0:M+1],q[M:])
-    Q = Q1+Q2
-    
-    a = ln.solve(Q,b)
-    h = list(nq)
-    for i in nb:
-        h[i] = 0.5*a[M-i]
-        h[N-1-i] = h[i]
-    h[M] = 2*h[M]
-    hmax = max(np.absolute(h))
-    for i in nq:
-        h[i] = (8191/hmax)*h[i]
-    return h
-    
-def lpfls2notch(N,wp,ws,wn1,wn2,W):
-    M = (N-1)/2
-    nq = np.arange(0,2*M+1)
-    nb = np.arange(0,M+1)
-    q = (wp/np.pi)*np.sinc((wp/np.pi)*nq) - W*(ws/np.pi)*np.sinc((ws/np.pi)*nq)
-    b = (wp/np.pi)*np.sinc((wp/np.pi)*nb)
-    q[0] = wp/np.pi + W*(1-ws/np.pi) # since sin(pi*n)/pi*n = 1, not 0
-    b = np.asmatrix(b)
-    b = b.transpose()
-    
-    Q1 = ln.toeplitz(q[0:M+1])
-    Q2 = ln.hankel(q[0:M+1],q[M:])
-    Q = Q1+Q2
-    
-    G1 = np.cos(wn1*nb)
-    G2 = np.cos(wn2*nb) 
-    G = np.matrix([G1,G2])
-    
-    d = np.array([0,0])
-    d = np.asmatrix(d)
-    d = d.transpose()
-    
-    c = np.asmatrix(ln.solve(Q,b))
-    
-    mu = ln.solve(G*ln.inv(Q)*G.transpose(),G*c - d)
-    
-    a = c - ln.solve(Q,G.transpose()*mu)
-    h = np.zeros(N)
-    for i in nb:
-        h[i] = 0.5*a[M-i]
-        h[N-1-i] = h[i]
-    h[M] = 2*h[M]
-    hmax = max(np.absolute(h))
-    for i in nq:
-        h[i] = (8191/hmax)*h[i]
-    return h
-    
-def lpfls1notch(N,wp,ws,wn1,W):
-    M = (N-1)/2
-    nq = np.arange(0,2*M+1)
-    nb = np.arange(0,M+1)
-    q = (wp/np.pi)*np.sinc((wp/np.pi)*nq) - W*(ws/np.pi)*np.sinc((ws/np.pi)*nq)
-    b = (wp/np.pi)*np.sinc((wp/np.pi)*nb)
-    q[0] = wp/np.pi + W*(1-ws/np.pi) # since sin(pi*n)/pi*n = 1, not 0
-    b = np.asmatrix(b)
-    b = b.transpose()
-    
-    Q1 = ln.toeplitz(q[0:M+1])
-    Q2 = ln.hankel(q[0:M+1],q[M:])
-    Q = Q1+Q2
-    
-    G1 = np.cos(wn1*nb)
-    G = np.matrix([G1])
-    
-    d = np.array([0])
-    d = np.asmatrix(d)
-    
-    c = np.asmatrix(ln.solve(Q,b))
-    
-    mu = ln.solve(G*ln.inv(Q)*G.transpose(),G*c - d)
-    
-    a = c - ln.solve(Q,G.transpose()*mu)
-    h = np.zeros(N)
-    for i in nb:
-        h[i] = 0.5*a[M-i]
-        h[N-1-i] = h[i]
-    h[M] = 2*h[M]
-    hmax = max(np.absolute(h))
-    for i in nq:
-        h[i] = (8191/hmax)*h[i]
-    return h
-    
 
 fig, myFilter = plt.subplots()
 plt.subplots_adjust(left=0.25,bottom=0.25)
 myFilter.set_xlabel('Freq(MHz)')
 myFilter.set_ylabel('Magnitude(dB)')
  
-h = lpfls(Taps,2*np.pi*(Fpass/Fsamp),2*np.pi*(Fstop/Fsamp),Weight)
+h = LSFIR.lpfls(Taps,2*np.pi*(Fpass/Fsamp),2*np.pi*(Fstop/Fsamp),Weight)
 h_quant = np.round(h)
 h_global = h_quant
 H = np.fft.fft(h,1024)
@@ -164,13 +66,13 @@ def update(val):
     wn2 = 2*np.pi*(Fnotch2/Fsamp)
     #h = np.zeros(0,Taps)
     if((Fnotch1 <= Fsamp/2) and (Fnotch2 <= Fsamp/2)) :
-        h = lpfls2notch(Taps,wp,ws,wn1,wn2,W)
+        h = LSFIR.lpfls2notch(Taps,wp,ws,wn1,wn2,W)
     elif((Fnotch1 > Fsamp/2) and (Fnotch2 <= Fsamp/2)):
-        h = lpfls1notch(Taps,wp,ws,wn2,W)
+        h = LSFIR.lpfls1notch(Taps,wp,ws,wn2,W)
     elif((Fnotch1 <= Fsamp/2) and (Fnotch2 > Fsamp/2)):
-        h = lpfls1notch(Taps,wp,ws,wn1,W)
+        h = LSFIR.lpfls1notch(Taps,wp,ws,wn1,W)
     else:
-        h = lpfls(Taps,wp,ws,W)
+        h = LSFIR.lpfls(Taps,wp,ws,W)
     h_quant = np.round(h)
     global h_global
     h_global = h_quant
