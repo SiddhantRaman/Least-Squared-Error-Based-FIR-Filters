@@ -3,13 +3,13 @@ import scipy.linalg as ln
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
 
-Fpass = 11     # MHz Passband end frequency
-Fstop = 15     #MHz Stopband start frequency
-Fsamp = 70.656 # MHz Sampling Frequency
-Weight = 10    # Weight of stop band error
+Fpass = 11.0     # MHz Passband end frequency
+Fstop = 15.0     #MHz Stopband start frequency
+Fsamp = 50.0     # MHz Sampling Frequency
+Weight = 100    # Weight of stop band error
 Taps = 71      # FIR Filter Taps
-Fnotch1 = 40 #Notch out freq Fnotch1
-Fnotch2 = 40
+Fnotch1 = 60   #Notch out freq Fnotch1
+Fnotch2 = 60
 
 n_global = np.arange(0,Taps)
 h_global = np.zeros(Taps)
@@ -116,9 +116,10 @@ plt.subplots_adjust(left=0.25,bottom=0.25)
 myFilter.set_xlabel('Freq(MHz)')
 myFilter.set_ylabel('Magnitude(dB)')
  
-h_global = lpfls(Taps,2*np.pi*(Fpass/Fsamp),2*np.pi*(Fstop/Fsamp),Weight)
-h_quant = np.round(h_global)
-H = np.fft.fft(h_global,1024)
+h = lpfls(Taps,2*np.pi*(Fpass/Fsamp),2*np.pi*(Fstop/Fsamp),Weight)
+h_quant = np.round(h)
+h_global = h_quant
+H = np.fft.fft(h,1024)
 H_quant = np.fft.fft(h_quant,1024) 
 Mag = 20*np.log10(abs(H[0:512]))
 Mag_quant = 20*np.log10(abs(H_quant[0:512]))
@@ -139,12 +140,12 @@ axFnotch1 = plt.axes([0.1, 0.1, 0.25, 0.02],axisbg=axcolor)
 axFnotch2 = plt.axes([0.1, 0.075, 0.25, 0.02],axisbg=axcolor)
 
 sTaps = Slider(axTaps,'Taps',15,200,valinit=Taps)
-sFsamp = Slider(axFsamp,'Samp Freq',1.0,70.656,valinit=Fsamp)
-sFpass = Slider(axFpass,'Passband',1.0,17.0,valinit=Fpass)
-sFstop = Slider(axFstop,'Stopband',1.0,17.0,valinit=Fstop)
+sFsamp = Slider(axFsamp,'Samp Freq',1.0,100,valinit=Fsamp)
+sFpass = Slider(axFpass,'Passband',1.0,40.0,valinit=Fpass)
+sFstop = Slider(axFstop,'Stopband',1.0,45.0,valinit=Fstop)
 sW = Slider(axW,'Weight',1.0,1000,valinit=Weight)
-sFnotch1 = Slider(axFnotch1,'Notch 1',0.0,40.0,valinit=Fnotch1)
-sFnotch2 = Slider(axFnotch2,'Notch 2',0.0,40.0,valinit=Fnotch2)
+sFnotch1 = Slider(axFnotch1,'Notch 1',0.0,60,valinit=Fnotch1)
+sFnotch2 = Slider(axFnotch2,'Notch 2',0.0,60,valinit=Fnotch2)
 
 def update(val):
     Taps = int(sTaps.val)
@@ -162,17 +163,17 @@ def update(val):
     wn1 = 2*np.pi*(Fnotch1/Fsamp)
     wn2 = 2*np.pi*(Fnotch2/Fsamp)
     #h = np.zeros(0,Taps)
-    if((Fnotch1 <= 35.328) and (Fnotch2 <= 35.328)) :
+    if((Fnotch1 <= Fsamp/2) and (Fnotch2 <= Fsamp/2)) :
         h = lpfls2notch(Taps,wp,ws,wn1,wn2,W)
-    elif((Fnotch1 > 35.328) and (Fnotch2<=35.328)):
+    elif((Fnotch1 > Fsamp/2) and (Fnotch2 <= Fsamp/2)):
         h = lpfls1notch(Taps,wp,ws,wn2,W)
-    elif((Fnotch1 <= 35.328) and (Fnotch2 > 35.328)):
+    elif((Fnotch1 <= Fsamp/2) and (Fnotch2 > Fsamp/2)):
         h = lpfls1notch(Taps,wp,ws,wn1,W)
     else:
         h = lpfls(Taps,wp,ws,W)
     h_quant = np.round(h)
     global h_global
-    h_global=h_quant
+    h_global = h_quant
     H = np.fft.fft(h,1024)
     H_quant = np.fft.fft(h_quant,1024)
     Mag = 20*np.log10(abs(H[0:512]))
