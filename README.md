@@ -1,5 +1,4 @@
 # ![fourier-being](logo.png)
-<img src="https://ci.appveyor.com/api/projects/status/tjvo1hcohnrkx58g/branch/master?svg=true" align="center" />
 
 # Least Squared Error Based FIR Filters
 > A very flexible graphical interface to design Least Square Error Based FIR Filters and generate fixed point coefficients 
