@@ -25,6 +25,8 @@ username@ubuntu:~/Least-Squared-Error-Based-FIR-Filters$ python LSDesignAdvanced
 
 <img src="figure_1.png" align="center" />
 
+#### NOTE: There are sliding bars at the bottom of the plot window corresponding to different parameters. You can adjust the sliding bars according to your requirement and then click on "Generate" button to generate the coefficients.
+
 ## Description
 
 ## Usage
