@@ -101,3 +101,7 @@ def lpfls1notch(N,wp,ws,wn1,W):
 def bpfls(N,ws1,wp1,wp2,ws2,W):
     h = np.zeros(N)
     return h
+
+def bpfls1notch(N,ws1,wp1,wp2,ws2,wn1,W):
+    h = np.zeros(N)
+    return h
