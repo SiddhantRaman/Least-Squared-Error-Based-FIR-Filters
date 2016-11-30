@@ -29,7 +29,7 @@ freq = np.zeros(512)
 for i in range(0,512) :
     freq[i] = Fsamp/2 * i/512
 l1, = plt.plot(freq,Mag, lw=2, color='blue')
-plt.axis([0, Fsamp/2, -50, 100])
+plt.axis([0, 50.0, -50, 100])
 l2, = plt.plot(freq,Mag_quant, lw=2, color='red')
 
 axcolor = 'lightgoldenrodyellow'
