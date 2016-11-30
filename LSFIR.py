@@ -8,6 +8,7 @@ def lpfls(N,wp,ws,W):
     nb = np.arange(0,M+1)
     q = (wp/np.pi)*np.sinc((wp/np.pi)*nq) - W*(ws/np.pi)*np.sinc((ws/np.pi)*nq)
     b = (wp/np.pi)*np.sinc((wp/np.pi)*nb)
+    b[0] = wp/np.pi
     q[0] = wp/np.pi + W*(1-ws/np.pi) # since sin(pi*n)/pi*n = 1, not 0
     b = b.transpose()
 
