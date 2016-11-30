@@ -1,5 +1,5 @@
 # ![fourier-being](logo.png)
-
+![Alt text](usage-animation.gif?raw=true "Optional Title")
 # Least Squared Error Based FIR Filters
 > A very flexible graphical interface to design Least Square Error Based FIR Filters and generate fixed point coefficients 
 ___
