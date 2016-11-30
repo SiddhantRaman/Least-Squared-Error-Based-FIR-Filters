@@ -100,7 +100,28 @@ def lpfls1notch(N,wp,ws,wn1,W):
     return h
 
 def bpfls(N,ws1,wp1,wp2,ws2,W):
-    h = np.zeros(N)
+    M = (N-1)/2
+    nq = np.arange(0,2*M+1)
+    nb = np.arange(0,M+1)
+    q = W*np.sinc(nq) - (W*ws2/np.pi) * np.sinc(nq* (ws2/np.pi)) + (wp2/np.pi) * np.sinc(nq*(wp2/np.pi)) - (wp1/np.pi) * np.sinc(nq*(wp1/np.pi)) + (W*ws1/np.pi) * np.sinc(nq*(ws1/np.pi))
+    b = (wp2/np.pi)*np.sinc((wp2/np.pi)*nb) - (wp1/np.pi)*np.sinc((wp1/np.pi)*nb)
+    b[0] = wp2/np.pi - wp1/np.pi
+    q[0] = W - W*ws2/np.pi + wp2/np.pi - wp1/np.pi + W*ws1/np.pi # since sin(pi*n)/pi*n = 1, not 0
+    b = b.transpose()
+
+    Q1 = ln.toeplitz(q[0:M+1])
+    Q2 = ln.hankel(q[0:M+1],q[M:])
+    Q = Q1+Q2
+
+    a = ln.solve(Q,b)
+    h = list(nq)
+    for i in nb:
+        h[i] = 0.5*a[M-i]
+        h[N-1-i] = h[i]
+    h[M] = 2*h[M]
+    hmax = max(np.absolute(h))
+    for i in nq:
+        h[i] = (8191/hmax)*h[i]
     return h
 
 def bpfls1notch(N,ws1,wp1,wp2,ws2,wn1,W):
