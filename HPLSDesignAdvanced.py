@@ -72,7 +72,7 @@ def update(val):
     elif((Fnotch1 <= Fsamp/2) and (Fnotch2 > Fsamp/2)):
         h = LSFIR.lpfls1notch(Taps,wp,ws,wn1,W)
     else:
-        h = LSFIR.hpfls(Taps,wp,ws,W)
+        h = LSFIR.hpfls(Taps,ws,wp,W)
     h_quant = np.round(h)
     global h_global
     h_global = h_quant
