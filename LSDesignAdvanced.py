@@ -77,6 +77,8 @@ def update(val):
         else:
             h = LSFIR.lpfls(Taps,wp,ws,W)
     elif(design == 1):
+        h = LSFIR.bpfls(Taps, 0.04, 0.07, wp, ws, W)
+    elif(design == 2):
         h = LSFIR.hpfls(Taps, ws, wp, W)
     h_quant = np.round(h)
     global h_global
@@ -127,17 +129,30 @@ button3 = Button(lowpassax, 'LowPass', color=axcolor, hovercolor='green')
 def LowPassDesignSet(event):
     global design
     design = 0
+
 button3.on_clicked(LowPassDesignSet)
+button3.on_clicked(reset)
 button3.on_clicked(update)
 
 highpassax = plt.axes([0.025, 0.4, 0.05, 0.04])
 button4 = Button(highpassax, 'HighPass', color=axcolor, hovercolor='green')
 def HighPassDesignSet(event):
     global design
-    design = 1
+    design = 2
+
 button4.on_clicked(HighPassDesignSet)
+button4.on_clicked(reset)
 button4.on_clicked(update)
 
+bandpassax = plt.axes([0.025, 0.3, 0.05, 0.04])
+button5 = Button(bandpassax, 'BandPass', color=axcolor, hovercolor='green')
+def BandPassDesignSet(event):
+    global design
+    design = 1
+
+button5.on_clicked(BandPassDesignSet)
+button5.on_clicked(reset)
+button5.on_clicked(update)
      
                         
 plt.show()
