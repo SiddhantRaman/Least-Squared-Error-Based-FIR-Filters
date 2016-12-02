@@ -158,8 +158,8 @@ class Menu(object):
                 break
 
 
-fig = plt.figure()
-fig.subplots_adjust(left=0.3)
+fig1 = plt.figure()
+fig1.subplots_adjust(left=0.3)
 props = ItemProperties(labelcolor='black', bgcolor='yellow',
                        fontsize=15, alpha=0.2)
 hoverprops = ItemProperties(labelcolor='white', bgcolor='blue',
@@ -170,12 +170,12 @@ for label in ('LowPass', 'BandPass', 'HighPass', 'MultiBand', 'quit'):
     def on_select(item):
         print('you selected %s' % item.labelstr)
 	if(item.labelstr == 'LowPass'):
-	    os.system('LSDesignAdvanced.py')
+	    execfile("LSDesignAdvanced.py")
 	if(item.labelstr == 'BandPass'):
-	    os.system('BPLSDesignAdvanced.py')
-    item = MenuItem(fig, label, props=props, hoverprops=hoverprops,
+	    execfile("BPLSDesignAdvanced.py")
+    item = MenuItem(fig1, label, props=props, hoverprops=hoverprops,
                     on_select=on_select)
     menuitems.append(item)
 
-menu = Menu(fig, menuitems)
+menu = Menu(fig1, menuitems)
 plt.show()

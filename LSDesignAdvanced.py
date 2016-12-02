@@ -12,6 +12,7 @@ Fnotch1 = 60   #Notch out freq Fnotch1
 Fnotch2 = 60
 
 h_global = np.zeros(Taps)
+design = 0
 
 fig, myFilter = plt.subplots()
 plt.subplots_adjust(left=0.25,bottom=0.25)
@@ -50,6 +51,7 @@ sFnotch1 = Slider(axFnotch1,'Notch 1',0.0,60,valinit=Fnotch1)
 sFnotch2 = Slider(axFnotch2,'Notch 2',0.0,60,valinit=Fnotch2)
 
 def update(val):
+    global design
     Taps = int(sTaps.val)
     if(Taps%2 == 0) :
         Taps = Taps +1 
@@ -65,14 +67,17 @@ def update(val):
     wn1 = 2*np.pi*(Fnotch1/Fsamp)
     wn2 = 2*np.pi*(Fnotch2/Fsamp)
     #h = np.zeros(0,Taps)
-    if((Fnotch1 <= Fsamp/2) and (Fnotch2 <= Fsamp/2)) :
-        h = LSFIR.lpfls2notch(Taps,wp,ws,wn1,wn2,W)
-    elif((Fnotch1 > Fsamp/2) and (Fnotch2 <= Fsamp/2)):
-        h = LSFIR.lpfls1notch(Taps,wp,ws,wn2,W)
-    elif((Fnotch1 <= Fsamp/2) and (Fnotch2 > Fsamp/2)):
-        h = LSFIR.lpfls1notch(Taps,wp,ws,wn1,W)
-    else:
-        h = LSFIR.lpfls(Taps,wp,ws,W)
+    if(design == 0):
+        if((Fnotch1 <= Fsamp/2) and (Fnotch2 <= Fsamp/2)) :
+            h = LSFIR.lpfls2notch(Taps,wp,ws,wn1,wn2,W)
+        elif((Fnotch1 > Fsamp/2) and (Fnotch2 <= Fsamp/2)):
+            h = LSFIR.lpfls1notch(Taps,wp,ws,wn2,W)
+        elif((Fnotch1 <= Fsamp/2) and (Fnotch2 > Fsamp/2)):
+            h = LSFIR.lpfls1notch(Taps,wp,ws,wn1,W)
+        else:
+            h = LSFIR.lpfls(Taps,wp,ws,W)
+    elif(design == 1):
+        h = LSFIR.hpfls(Taps, ws, wp, W)
     h_quant = np.round(h)
     global h_global
     h_global = h_quant
@@ -115,7 +120,25 @@ button2 = Button(generateax, 'Generate', color=axcolor, hovercolor='green')
 def generate(event):
     global h_global
     print h_global[0:(len(h_global)+1)/2]
-button2.on_clicked(generate)                        
+button2.on_clicked(generate)                       
+
+lowpassax = plt.axes([0.025, 0.5, 0.05, 0.04])
+button3 = Button(lowpassax, 'LowPass', color=axcolor, hovercolor='green')
+def LowPassDesignSet(event):
+    global design
+    design = 0
+button3.on_clicked(LowPassDesignSet)
+button3.on_clicked(update)
+
+highpassax = plt.axes([0.025, 0.4, 0.05, 0.04])
+button4 = Button(highpassax, 'HighPass', color=axcolor, hovercolor='green')
+def HighPassDesignSet(event):
+    global design
+    design = 1
+button4.on_clicked(HighPassDesignSet)
+button4.on_clicked(update)
+
+     
                         
 plt.show()
     
