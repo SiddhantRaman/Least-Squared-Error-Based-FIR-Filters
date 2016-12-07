@@ -14,7 +14,7 @@ Fnotch2 = 60
 h_global = np.zeros(Taps)
 design = 0
 
-fig, myFilter = plt.subplots()
+fig, myFilter = plt.subplots(figsize=(20, 10))
 plt.subplots_adjust(left=0.25,bottom=0.25)
 myFilter.set_xlabel('Freq(MHz)')
 myFilter.set_ylabel('Magnitude(dB)')
