@@ -46,7 +46,7 @@ axW = plt.axes([0.1, 0.175, 0.25, 0.02],axisbg=axcolor)
 axFnotch1 = plt.axes([0.1, 0.150, 0.25, 0.02],axisbg=axcolor)  
 axFnotch2 = plt.axes([0.1, 0.125, 0.25, 0.02],axisbg=axcolor)
 
-sTaps = Slider(axTaps,'Taps',15,200,valinit=Taps)
+sTaps = Slider(axTaps,'Taps',15,2048,valinit=Taps)
 sFsamp = Slider(axFsamp,'Samp Freq',1.0,100,valinit=Fsamp)
 sFpass1 = Slider(axFpass1,'PassFreq2',1.0,40.0,valinit=Fpass1)
 sFstop1 = Slider(axFstop1,'StopFreq2',1.0,45.0,valinit=Fstop1)
