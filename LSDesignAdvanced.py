@@ -78,6 +78,8 @@ def update(val):
     wn2 = 2*np.pi*(Fnotch2/Fsamp)
 
     if(design == 0):
+        if(ws<=wp) :
+            print("PANIC --> Stop Frequency is smaller than Cut-off Frequency!!")
         if((Fnotch1 <= Fsamp/2) and (Fnotch2 <= Fsamp/2)) :
             h = LSFIR.lpfls2notch(Taps,wp,ws,wn1,wn2,W)
         elif((Fnotch1 > Fsamp/2) and (Fnotch2 <= Fsamp/2)):
