@@ -1,8 +1,7 @@
-# ![fourier-being](logo.png)
 # Least Squared Error Based FIR Filters
 > A very flexible graphical interface to design Least Square Error Based FIR Filters and generate fixed point coefficients 
 ___
-
+![Alt text](usage-animation.gif?raw=true "Optional Title")
 ## Getting Started
 ### Install Python on Ubuntu
 ```
